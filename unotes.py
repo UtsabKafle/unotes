@@ -1,4 +1,3 @@
-import re
 import requests
 from bs4 import BeautifulSoup
 import wikipedia
@@ -24,26 +23,23 @@ class unotes:
         for i in range(len(data)):
             searches = wikipedia.search(data[i])
             print(searches)
-            main_result = wikipedia.summary(searches[0])
+            main_result = wikipedia.summary(searches[0],auto_suggest=False)
             self.content[f'{self.data_list[i]}'] = main_result
         return self.content
            
     def save_all(self,file_name,data_obj):
         html_upper = f"<!DOCTYPE html><html lang='en'><head><title>Document</title></head><body>"
         html_lower = f"</body></html>"
-        file =  open(f'{str(file_name)}.html','w+')
+        file =  open(f'output/{str(file_name)}.html','w+')
         file.write(str(html_upper))
         for i in data_obj:
-            content_ = f"<h3>{i}</h3><p>{data_obj[i]}</p>"
+            content_ = f"<h3>{i}</h3><p>{data_obj[i]}</p><hr>"
             file.write(str(content_))
-            for i in content_:
-                print(i)
-                print('------')
         file.write(str(html_lower))
         file.close()
 
 def main():
-    note = unotes('database')
+    note = unotes('application of technology in agriculture','machine learning')
     a = note.wikipedia_search()
     # print(a)
     note.save_all('kafle',a)
