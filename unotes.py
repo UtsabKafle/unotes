@@ -95,12 +95,12 @@ class unotes:
             name = i['name']
             content = i['content']
             links = i['links']
-            show_function_ = f"<script>function show_{name}(){'{'} {'if'} (document.getElementById('links_show{name}').style.display == 'block') {'{'} document.getElementById('links_show{name}').style.display = 'none';{'}'}else{'{'}document.getElementById('links_show{i}').style.display = 'block';{'}}'}</script>"
+            show_function_ = f"<script>function show_{name}(){'{'} {'if'} (document.getElementById('links_show{name}').style.display == 'block') {'{'} document.getElementById('links_show{name}').style.display = 'none';{'}'}else{'{'}document.getElementById('links_show{name}').style.display = 'block';{'}}'}</script>"
             content_ = f"<h3>{name}</h3><p>{content}</p><hr><div class='more'><div class='show-text' onclick='show_{name}();'>Show more links</div><div class='more-links' id='links_show{name}' >"
             file.write(str(show_function_))
             file.write(str(content_))
             for link in links:
-                link_ = f"<div class='link'><a href='{link}' target='_blank'>{link}</div>"
+                link_ = f"<div class='link'><a href='{link}' target='_blank'>{link}</a></div>"
                 file.write(str(link_))
             content_end = "</div>"
             file.write(str(content_end))
@@ -108,7 +108,7 @@ class unotes:
         file.close()
 
 def main():
-    note = unotes('twich','mount everest')
+    note = unotes('modes+of+transmission+networking','aromaticity')
     a = note.search()
     # print(a)
     note.save_all('crap',a)
