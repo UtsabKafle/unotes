@@ -11,8 +11,15 @@ class unotes:
         return f"unotes for {self.data_list}"
     def search(self):
         contents = []
-        for i in self.data_list:
-            req = requests.get(f"https://www.google.com/search?q={i}")
+        wiki_content = []
+        sub_results = []
+        data = self.data_list
+        for i in range(len(data)):
+            searches = wikipedia.search(data[i])
+            # print(searches)
+            main_result = wikipedia.summary(searches[0],auto_suggest=False)
+            self.content[f'{data[i]}'] = main_result
+            req = requests.get(f"https://www.google.com/search?q={data[i]}")
             content = BeautifulSoup(req.text,features='html.parser')
             x = content.find_all('a')
             links = []
@@ -22,10 +29,14 @@ class unotes:
                     url_ = link.split("?")[1].split("&")[0].split("=")[1]
                     if "%" not in url_:
                         links.append(url_)
-            self.links[i] = links
-            print("   ---    "*20)
-            print(self.links)
-        return self.links
+            self.links[data[i]] = links
+            temp_ = {'name':f'{data[i]}','content':str(main_result),'links':links}
+            contents.append(temp_)
+            # print("   ---    "*20)
+            # print(self.links)
+        print(contents[1])
+        return contents
+
     def wikipedia_search(self):
         wiki_content = []
         sub_results = []
@@ -78,18 +89,26 @@ class unotes:
     </div>
         """
         html_lower = f"</body></html>"
-        file =  open(f'output/{str(file_name)}.html','w+')
+        file =  open(f'output/{str(file_name)}.html','w+',encoding='utf-8')
         file.write(str(html_upper))
         for i in data_obj:
-            content_ = f"<h3>{i}</h3><p>{data_obj[i]}</p><hr><div class='more'><div class='show-text' onclick='show();'>Show more links</div> <div class='more-links' id='links_show{i}' ></div>"
-            show_function_ = f"<script>function show(){'{'} {'if'} (document.getElementById('links_show{i}').style.display == 'block') {'{'} document.getElementById('links_show{i}').style.display = 'none';{'}'}else{'{'}document.getElementById('links_show{i}').style.display = 'block';{'}}'}</script>"
+            name = i['name']
+            content = i['content']
+            links = i['links']
+            show_function_ = f"<script>function show_{name}(){'{'} {'if'} (document.getElementById('links_show{name}').style.display == 'block') {'{'} document.getElementById('links_show{name}').style.display = 'none';{'}'}else{'{'}document.getElementById('links_show{i}').style.display = 'block';{'}}'}</script>"
+            content_ = f"<h3>{name}</h3><p>{content}</p><hr><div class='more'><div class='show-text' onclick='show_{name}();'>Show more links</div><div class='more-links' id='links_show{name}' >"
             file.write(str(show_function_))
             file.write(str(content_))
+            for link in links:
+                link_ = f"<div class='link'><a href='{link}' target='_blank'>{link}</div>"
+                file.write(str(link_))
+            content_end = "</div>"
+            file.write(str(content_end))
         file.write(str(html_lower))
         file.close()
 
 def main():
-    note = unotes('nepal','india','usa')
+    note = unotes('twich','mount everest')
     a = note.search()
     # print(a)
     note.save_all('crap',a)
