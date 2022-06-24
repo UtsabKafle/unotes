@@ -34,7 +34,6 @@ class unotes:
             contents.append(temp_)
             # print("   ---    "*20)
             # print(self.links)
-        print(contents[1])
         return contents
 
     def wikipedia_search(self):
@@ -108,10 +107,10 @@ class unotes:
         file.close()
 
 def main():
-    note = unotes('modes+of+transmission+networking','aromaticity')
+    note = unotes('chemical_effect_of_current','heavy_metals','ethers')
     a = note.search()
     # print(a)
-    note.save_all('crap',a)
+    note.save_all('physics_chemisry',a)
     
 if __name__=='__main__':
     main()
