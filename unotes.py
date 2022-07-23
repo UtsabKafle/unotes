@@ -4,11 +4,13 @@ import wikipedia
 
 class unotes:
     def __init__(self,*args):
-        self.data_list = args
+        self.data_list = [a.replace(' ','_')for a in args]
         self.content = {}
         self.links = {}
+
     def __str__(self):
         return f"unotes for {self.data_list}"
+
     def search(self):
         contents = []
         wiki_content = []
@@ -17,9 +19,12 @@ class unotes:
         for i in range(len(data)):
             searches = wikipedia.search(data[i])
             # print(searches)
-            main_result = wikipedia.summary(searches[0],auto_suggest=False)
+            try:
+                main_result = wikipedia.summary(searches[0],auto_suggest=False)
+            except:
+                main_result = f"Some errors. Please consider changing the parameters for {data[i]}. :) "
             self.content[f'{data[i]}'] = main_result
-            req = requests.get(f"https://www.google.com/search?q={data[i]}")
+            req = requests.get(f"https://www.google.com/search?q={str(data[i].replace('_','+'))}")
             content = BeautifulSoup(req.text,features='html.parser')
             x = content.find_all('a')
             links = []
@@ -32,31 +37,20 @@ class unotes:
             self.links[data[i]] = links
             temp_ = {'name':f'{data[i]}','content':str(main_result),'links':links}
             contents.append(temp_)
-            # print("   ---    "*20)
-            # print(self.links)
         return contents
-
-    def wikipedia_search(self):
-        wiki_content = []
-        sub_results = []
-        data = self.data_list
-        for i in range(len(data)):
-            searches = wikipedia.search(data[i])
-            print(searches)
-            main_result = wikipedia.summary(searches[0],auto_suggest=False)
-            self.content[f'{self.data_list[i]}'] = main_result
-        return self.content
-           
-    def save_all(self,file_name,data_obj):
+        
+    def save(self,file_name,data_obj):
         html_upper = """
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Unotes</title>
     <style>
+
         .left-cont{
-            border-radius: 15px;
+             border-radius: 15px;
             display: block;
+            float: left;
             margin: 25px 10px;
             box-shadow: 15px 15px 20px 5px rgb(212, 233, 231);
             padding: 15px;
@@ -76,9 +70,17 @@ class unotes:
         }
         .show-text{
             cursor: pointer;
+            font-weight:700;
+            border:1px solid black;
+            padding:3px;
+            background-color:skyblue;
+
         }
         #links_show{
             display: none;
+        }
+        h3{
+            text-align:center;
         }
     </style>
 </head>
@@ -88,14 +90,14 @@ class unotes:
     </div>
         """
         html_lower = f"</body></html>"
-        file =  open(f'output/{str(file_name)}.html','w+',encoding='utf-8')
+        file =  open(f'output/{str(file_name)}','w+',encoding='utf-8')
         file.write(str(html_upper))
         for i in data_obj:
             name = i['name']
             content = i['content']
             links = i['links']
-            show_function_ = f"<script>function show_{name}(){'{'} {'if'} (document.getElementById('links_show{name}').style.display == 'block') {'{'} document.getElementById('links_show{name}').style.display = 'none';{'}'}else{'{'}document.getElementById('links_show{name}').style.display = 'block';{'}}'}</script>"
-            content_ = f"<h3>{name}</h3><p>{content}</p><hr><div class='more'><div class='show-text' onclick='show_{name}();'>Show more links</div><div class='more-links' id='links_show{name}' >"
+            show_function_ = f"<script>function show_{name}(){'{'} {'if'} (document.getElementById('links_show{name}').style.display == 'none') {'{'} document.getElementById('links_show{name}').style.display = 'block';{'}'}else{'{'}document.getElementById('links_show{name}').style.display = 'none';{'}}'}</script>"
+            content_ = f"<h3>{name}</h3><p>{content}</p><hr><div class='more'><button type='button' class='show-text' onclick='show_{name}();'>See links ^_^</button><div class='more-links' style='display:none;' id='links_show{name}' >"
             file.write(str(show_function_))
             file.write(str(content_))
             for link in links:
@@ -107,10 +109,9 @@ class unotes:
         file.close()
 
 def main():
-    note = unotes('chemical_effect_of_current','heavy_metals','ethers')
-    a = note.search()
-    # print(a)
-    note.save_all('physics_chemisry',a)
+    note = unotes('param1','param2')
+    chapters = note.search()
+    note.save('new_file.html',chapters)
     
 if __name__=='__main__':
     main()
