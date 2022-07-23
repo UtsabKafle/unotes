@@ -12,7 +12,10 @@ Okay, Unotes is a web scrapping project that pulls the defination from wikipedia
 
 
 ## how to use
-1) just clone the project or download the <a href='https://github.com/UtsabKafle/unotes/blob/master/unotes.py'>unotes.py</a> file
+1) just clone the project or download the <a href='https://github.com/UtsabKafle/unotes/blob/master/unotes.py'>unotes.py</a> file.
+        OR
+    ```sh
+    pip install unotes
 2) create a new file in the same directory as the unotes.py file
 3) write this code
 

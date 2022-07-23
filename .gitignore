@@ -1,6 +1,7 @@
 #ignoring my personal outputs
 output/
-
+/setup.py
+/setup.cfg
 
 
 # Byte-compiled / optimized / DLL files
