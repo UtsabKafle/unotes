@@ -111,7 +111,7 @@ class unotes:
 def main():
     note = unotes('param1','param2')
     chapters = note.search()
-    note.save('new_file.html',chapters)
+    note.save('file_name.html',chapters)
     
 if __name__=='__main__':
     main()
