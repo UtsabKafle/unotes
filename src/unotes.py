@@ -90,7 +90,7 @@ class unotes:
     </div>
         """
         html_lower = f"</body></html>"
-        file =  open(f'output/{str(file_name)}','w+',encoding='utf-8')
+        file =  open(f'{str(file_name)}','w+',encoding='utf-8')
         file.write(str(html_upper))
         for i in data_obj:
             name = i['name']
